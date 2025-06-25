@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DEEP WEB CHAT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: #000;
+      font-family: 'Share Tech Mono', monospace;
+      color: #ff1a1a;
+      overflow: hidden;
+      user-select: none;
+      transition: background 0.5s ease;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+    }
+
+    h1 {
+      font-size: 4rem;
+      animation: glitch 2s infinite;
+      text-shadow: 0 0 2px #ff1a1a;
+      transform: skew(-1deg);
+    }
+
+    @keyframes glitch {
+      0%, 100% { text-shadow: 2px 0 red, -2px 0 darkred; }
+      50% { text-shadow: -3px 0 red, 3px 0 darkred; }
+    }
+
+    .welcome {
+      font-size: 1.3rem;
+      color: #ff4d4d;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      background: transparent;
+      border: 2px solid #ff1a1a;
+      padding: 12px 30px;
+      font-size: 1.2rem;
+      color: #ff1a1a;
+      cursor: pointer;
+      transition: 0.3s;
+      letter-spacing: 1px;
+    }
+
+    .btn:hover {
+      background-color: #ff1a1a;
+      color: #000;
+      box-shadow: 0 0 15px #ff1a1a;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    #matrix {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      filter: blur(1px) brightness(0.8);
+    }
+
+    /* QR ثابت */
+    .qr {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 20;
+      background: rgba(0,0,0,0.6);
+      padding: 8px;
+      border: 1px solid #ff1a1a;
+      border-radius: 8px;
+    }
+
+    .qr img {
+      width: 100px;
+      height: 100px;
+    }
+
+    /* زر الوضع */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 20;
+      padding: 6px 12px;
+      background: transparent;
+      border: 1px solid #ff1a1a;
+      color: #ff1a1a;
+      cursor: pointer;
+    }
+
+    .theme-toggle:hover {
+      background: #ff1a1a;
+      color: #000;
+    }
+
+    /* الوضع الدموي */
+    .bloody {
+      background-color: #1a0000;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="container">
+  <h1>DEEP WEB CHAT</h1>
+  <div class="welcome">↳ الاتصال بكائن مجهول... جاري فتح البوابة الرقمية.</div>
+  <div class="btn-group">
+    <button class="btn" onclick="openHill()">OPEN THE HILL</button>
+    <button class="btn" onclick="window.open('https://instagram.com/192.168.0.128', '_blank')">Contact Anonymous</button>
+    <button class="btn" onclick="window.open('https://t.me/X730X', '_blank')">Telegram</button>
+  </div>
+</div>
+
+<!-- QR ثابت -->
+<div class="qr">
+  <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://emochi.com/prompt/prompt-share/@-142f8888" alt="QR Code">
+</div>
+
+<!-- زر تبديل الوضع -->
+<button class="theme-toggle" onclick="toggleTheme()">🩸 Blood Mode</button>
+
+<!-- الأصوات -->
+<audio id="hover-sound">
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_273ae0ebf5.mp3?filename=hover-124036.mp3" type="audio/mpeg">
+</audio>
+<audio id="click-sound">
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7b237a33e7.mp3?filename=access-granted-124019.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  // Matrix effect
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+  let w = window.innerWidth;
+  let h = window.innerHeight;
+  canvas.width = w;
+  canvas.height = h;
+
+  const letters = "01";
+  const fontSize = 14;
+  const columns = Math.floor(w / fontSize);
+  const drops = Array(columns).fill(1);
+
+  function drawMatrix() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.08)";
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.fillStyle = "#ff1a1a";
+    ctx.font = fontSize + "px monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = letters.charAt(Math.floor(Math.random() * letters.length));
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+      if (drops[i] * fontSize > h && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }
+
+  setInterval(drawMatrix, 40);
+
+  // أصوات
+  const hoverSound = document.getElementById('hover-sound');
+  const clickSound = document.getElementById('click-sound');
+
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('mouseenter', () => {
+      hoverSound.currentTime = 0;
+      hoverSound.play();
+    });
+    btn.addEventListener('click', () => {
+      clickSound.currentTime = 0;
+      clickSound.play();
+    });
+  });
+
+  // فتح الرابط
+  function openHill() {
+    setTimeout(() => {
+      window.open('https://emochi.com/prompt/prompt-share/@-142f8888', '_blank');
+    }, 800);
+  }
+
+  // تغيير الوضع
+  function toggleTheme() {
+    document.body.classList.toggle('bloody');
+  }
+
+  // تحديث على تغيير حجم الشاشة
+  window.addEventListener('resize', () => {
+    w = window.innerWidth;
+    h = window.innerHeight;
+    canvas.width = w;
+    canvas.height = h;
+  });
+</script>
+
+</body>
+</html>
